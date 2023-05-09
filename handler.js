@@ -99,10 +99,36 @@ const getProfileHandler = async (request, h) => {
 
 
 // TODO: getMovie
-const getMovieHandler = async (request, h) => {
+// TODO: getMovie
+const getMovie = (request, h) {
+    const query = 'SELECT * FROM movies';
+    const [rows] = await db.query(query);
 
+    if (rows.length == 0) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Movies not found'
+        });
+        response.code(404);
+        return response;
+    }
 }
 
+const getMovieDetails = (request, h) {
+    const id = req.params;
+    const query = 'SELECTED * FROM movies where movieID = ?';
+
+    const [rows] = await db.query(query, [id]);
+
+    if (rows.length == 0) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Movies details not found'
+        });
+        response.code(404);
+        return response;
+    }
+    
 //TODO: GetSeat
 
 //todo: BookSeat
