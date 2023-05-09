@@ -1,7 +1,7 @@
 const db = require('./database');
 const{nanoid} = require("nanoid");
 
-const login = (request, h) => {
+const loginHandler = async (request, h) => {
     const {email, password} = request.payload;
 
     if (!email || !password) {
@@ -45,9 +45,9 @@ const login = (request, h) => {
     return response;
 }
 
-cosnt register = (requet, h) => {
+const registerHandler = async (request, h) => {
     const {email, usrName, password, firstName, lastName, birthday, phoneNum, street, city,
-    province postalCode, paymentmethod, cardNum, expDate} = request.payload;
+    province, postalCode, paymentmethod, cardNum, expDate} = request.payload;
 
     const checkUsrQuery = 'SELECT * FROM customer WHERE cust_email = ?';
     const [exsistingUsr] = await db.query(chackUsrQuery, [email]);
@@ -74,9 +74,8 @@ cosnt register = (requet, h) => {
     return response;
 }
 
-// TODO: getProfile
-const getProfile = (request, h) = > {
-    const id = req.params;
+const getProfileHandler = async (request, h) => {
+    const id = request.params.id;
     const query = 'SELECT * FROM customers WHERE customer_id = ?';
 
     const [rows] = await db.query(query, [id]);
@@ -90,12 +89,23 @@ const getProfile = (request, h) = > {
         return response;
     }
 
-    // logic to handle if the request is successful
-    
+    return {
+        status: 'success',
+        data: {
+            ...rows[0],
+        },
+    };
 }
+
 
 // TODO: getMovie
-const getMovie = (request, h) {
+const getMovieHandler = async (request, h) => {
 
 }
+
+//TODO: GetSeat
+
+//todo: BookSeat
+
+module.exports = {loginHandler, registerHandler};
 
