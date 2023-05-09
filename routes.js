@@ -4,12 +4,12 @@ const routes = [
     {
         method: "POST",
         path: "/login",
-        handler:loginHandler,
+        handler: loginHandler,
     },
     {
         method: "POST",
         path: "/register",
-        handler:registerHandler,
+        handler: registerHandler,
     }
 ];
 
