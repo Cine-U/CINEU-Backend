@@ -1,0 +1,190 @@
+CREATE TABLE `menu` (
+  `menu_id` int PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(255),
+  `price` double,
+  `calorie` double
+);
+
+CREATE TABLE `menuOrder` (
+  `order_id` int PRIMARY KEY AUTO_INCREMENT,
+  `menu_id` int,
+  `cinema_id` int,
+  `kuantitas` int
+);
+
+CREATE TABLE `barista` (
+  `barista_id` int PRIMARY KEY AUTO_INCREMENT,
+  `email` varchar(255),
+  `password` varchar(255),
+  `firstName` varchar(255),
+  `lastName` varchar(255),
+  `bankAccount` varchar(255),
+  `phoneNumber` varchar(255),
+  `birthday` date,
+  `street` varchar(255),
+  `city` varchar(255),
+  `province` varchar(255),
+  `postalcode` int
+);
+
+CREATE TABLE `cinema` (
+  `cinema_id` int PRIMARY KEY AUTO_INCREMENT,
+  `cinema_name` varchar(255),
+  `street` varchar(255),
+  `city` varchar(255),
+  `province` varchar(255),
+  `postalcode` int
+);
+
+CREATE TABLE `technology` (
+  `technology_id` int PRIMARY KEY AUTO_INCREMENT,
+  `technology_name` varchar(255)
+);
+
+CREATE TABLE `theatre` (
+  `theatre_id` int PRIMARY KEY AUTO_INCREMENT,
+  `cinema_id` int,
+  `technology_id` int,
+  `numOfSeats` int
+);
+
+CREATE TABLE `movieSchedule` (
+  `schedule_id` int PRIMARY KEY AUTO_INCREMENT,
+  `cinema_id` int,
+  `theatre_id` int,
+  `technology_id` int,
+  `movie_id` int,
+  `showdate` DATE,
+  `showtime` time,
+  `pricing` double
+);
+
+CREATE TABLE `movie` (
+  `movie_id` int PRIMARY KEY AUTO_INCREMENT,
+  `movie_name` varchar(255),
+  `genre` varchar(255),
+  `runtime` int,
+  `movieDesc` varchar(255),
+  `posterUrl` varchar(255),
+  `trailerUrl` varchar(255)
+);
+
+CREATE TABLE `customer` (
+  `customer_id` int PRIMARY KEY AUTO_INCREMENT,
+  `cust_email` varchar(255),
+  `username` varchar(255),
+  `password` varchar(255),
+  `firstName` varchar(255),
+  `lastName` varchar(255),
+  `birthday` date,
+  `phoneNumber` varchar(255),
+  `street` varchar(255),
+  `city` varchar(255),
+  `province` varchar(255),
+  `postalcode` int,
+  `paymentMethod` varchar(255),
+  `cardNumber` varchar(255),
+  `expiryDate` date
+);
+
+CREATE TABLE `admin` (
+  `admin_id` int PRIMARY KEY AUTO_INCREMENT,
+  `admin_email` varchar(255),
+  `username` varchar(255),
+  `password` varchar(255),
+  `firstName` varchar(255),
+  `lastName` varchar(255),
+  `birthday` date,
+  `phoneNumber` varchar(255),
+  `street` varchar(255),
+  `city` varchar(255),
+  `province` varchar(255),
+  `postalcode` int
+);
+
+CREATE TABLE `movieOrder` (
+  `oder_id` int PRIMARY KEY AUTO_INCREMENT,
+  `customer_id` int,
+  `schedule_id` int,
+  `seat_number` varchar(255)
+);
+
+ALTER TABLE `menuOrder` ADD FOREIGN KEY (`menu_id`) REFERENCES `menu` (`menu_id`);
+
+ALTER TABLE `theatre` ADD FOREIGN KEY (`cinema_id`) REFERENCES `cinema` (`cinema_id`);
+
+ALTER TABLE `movieSchedule` ADD FOREIGN KEY (`cinema_id`) REFERENCES `cinema` (`cinema_id`);
+
+ALTER TABLE `theatre` ADD FOREIGN KEY (`technology_id`) REFERENCES `technology` (`technology_id`);
+
+ALTER TABLE `movieSchedule` ADD FOREIGN KEY (`theatre_id`) REFERENCES `theatre` (`theatre_id`);
+
+ALTER TABLE `movieSchedule` ADD FOREIGN KEY (`technology_id`) REFERENCES `technology` (`technology_id`);
+
+ALTER TABLE `movieSchedule` ADD FOREIGN KEY (`movie_id`) REFERENCES `movie` (`movie_id`);
+
+ALTER TABLE `movieOrder` ADD FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`);
+
+ALTER TABLE `movieOrder` ADD FOREIGN KEY (`schedule_id`) REFERENCES `movieSchedule` (`schedule_id`);
+
+
+
+
+INSERT INTO `menu` (`name`, `price`, `calorie`) VALUES
+  ('Cheeseburger', 7.99, 850),
+  ('French Fries', 3.99, 320),
+  ('Coke', 1.99, 150),
+  ('Pizza', 12.99, 1200),
+  ('Hot Dog', 5.99, 500);
+
+INSERT INTO `menuOrder` (`menu_id`, `cinema_id`, `kuantitas`) VALUES
+  (1, 1, 2),
+  (2, 1, 1),
+  (3, 1, 3),
+  (4, 1, 1),
+  (5, 1, 2);
+
+INSERT INTO `barista` (`email`, `password`, `firstName`, `lastName`, `bankAccount`, `phoneNumber`, `birthday`, `street`, `city`, `province`, `postalcode`) VALUES
+  ('john@example.com', 'mypassword', 'John', 'Doe', '1234567890', '555-1234', '1990-01-01', '123 Main St', 'Anytown', 'Anyprovince', 12345),
+  ('jane@example.com', 'mypassword', 'Jane', 'Doe', '0987654321', '555-4321', '1995-02-15', '456 Oak Ave', 'Anycity', 'Anyprovince', 54321),
+  ('bob@example.com', 'mypassword', 'Bob', 'Smith', '1111111111', '555-5678', '1985-11-30', '789 Maple Rd', 'Anothercity', 'Anotherprovince', 67890);
+
+INSERT INTO `cinema` (`cinema_name`, `street`, `city`, `province`, `postalcode`) VALUES
+  ('Cineplex Odeon', '123 Main St', 'Toronto', 'Ontario', 12345),
+  ('AMC Theatres', '456 Oak Ave', 'New York', 'New York', 54321),
+  ('Regal Cinemas', '789 Maple Rd', 'Los Angeles', 'California', 67890);
+
+INSERT INTO `technology` (`technology_name`) VALUES
+  ('IMAX'),
+  ('3D'),
+  ('Dolby Atmos');
+
+INSERT INTO `theatre` (`cinema_id`, `technology_id`, `numOfSeats`) VALUES
+  (1, 1, 100),
+  (1, 2, 75),
+  (1, 3, 120),
+  (2, 1, 150),
+  (2, 3, 100),
+  (3, 2, 80);
+
+INSERT INTO `movie` (`movie_name`, `genre`, `runtime`, `movieDesc`, `posterUrl`, `trailerUrl`) VALUES
+  ('Inception', 'Action', 148, 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', 'https://www.example.com/inception_poster.jpg', 'https://www.example.com/inception_trailer.mp4'),
+  ('The Shawshank Redemption', 'Drama', 142, 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.', 'https://www.example.com/shawshank_redemption_poster.jpg', 'https://www.example.com/shawshank_redemption_trailer.mp4'),
+  ('The Godfather', 'Crime', 175, 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.', 'https://www.example.com/godfather_poster.jpg', 'https://www.example.com/godfather_trailer.mp4');
+
+INSERT INTO `movieSchedule` (`cinema_id`, `theatre_id`, `technology_id`, `movie_id`, `showdate`, `showtime`, `pricing`) VALUES
+  (1, 1, 1, 1, '2023-05-15', '19:00:00', 12.50),
+  (1, 2, 2, 2, '2023-05-16', '18:30:00', 10.00),
+  (2, 1, 1, 3, '2023-05-17', '20:00:00', 15.00),
+  (2, 2, 3, 1, '2023-05-18', '21:00:00', 13.50);
+
+INSERT INTO `customer` (`cust_email`, `username`, `password`, `firstName`, `lastName`, `birthday`, `phoneNumber`, `street`, `city`, `province`, `postalcode`, `paymentMethod`, `cardNumber`, `expiryDate`) VALUES 
+('johndoe@example.com', 'johndoe', 'password123', 'John', 'Doe', '1990-01-01', '1234567890', '123 Main St', 'Anytown', 'Anyprovince', 12345, 'Visa', '1234567890123456', '2025-12-31'),
+('janedoe@example.com', 'janedoe', 'password456', 'Jane', 'Doe', '1995-05-05', '0987654321', '456 Oak St', 'Anycity', 'Anyprovince', 67890, 'Mastercard', '9876543210987654', '2023-06-30');
+
+INSERT INTO `admin` (`admin_email`, `username`, `password`, `firstName`, `lastName`, `birthday`, `phoneNumber`, `street`, `city`, `province`, `postalcode`) VALUES 
+('admin@example.com', 'admin', 'adminpassword', 'Admin', 'User', '1980-01-01', '555-1234', '789 Admin St', 'Admin City', 'Admin Province', 12345);
+
+INSERT INTO movieOrder (customer_id, schedule_id, seat_number) VALUES
+(1, 1, 'A1'),
+(2, 2, 'B2');
