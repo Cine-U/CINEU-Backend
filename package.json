@@ -15,5 +15,13 @@
     "mysql": "^2.18.1",
     "nanoid": "^4.0.2",
     "nodemon": "^2.0.22"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cine-U/CINEU-Backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cine-U/CINEU-Backend/issues"
+  },
+  "homepage": "https://github.com/Cine-U/CINEU-Backend#readme"
 }
