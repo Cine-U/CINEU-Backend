@@ -103,7 +103,7 @@ const getProfileHandler = async (request, h) => {
 }
 
 // TODO: fix, dual variable
-const updatePassword = async (request, h) => {
+const updatePasswordHandler = async (request, h) => {
     const {email, password} = request.payload;
     const query = 'SELECT * FROM customer WHERE cust_email = ?';
     const [rows] = await db.query(query, [email]);
@@ -123,38 +123,58 @@ const updatePassword = async (request, h) => {
 
 }
 
-const getMovie = (request, h) => {
-    const query = 'SELECT * FROM movies';
-    const [rows] = await db.query(query);
-
-    if (rows.length == 0) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Movies not found'
-        });
-        response.code(404);
-        return response;
-    }
-}
-
-const getMovieDetails = (request, h) => {
+const getMovieHandler = async (request, h) => {
     const movie_id = request.params.id;
-    const query = 'SELECTED * FROM movies where movie_id = ?';
+    const query = 'SELECT * FROM movies where movie_id = ?';
 
     const [rows] = await db.query(query, [id]);
 
     if (rows.length == 0) {
         const response = h.response({
             status: 'fail',
-            message: 'Movies details not found'
+            message: 'Movie  not found'
         });
         response.code(404);
         return response;
     }
+
+    const response = h.response({
+        status: "success",
+        data: {
+            ...rows[0],
+        }
+    });
+    response.code(200);
+        return response;
+}
+
+//get 6 latest movies for homepage
+const getLatestMovieHandler = async (request, h) => {
+    const query = 'SELECT * FROM movies ORDER BY release_date DESC LIMIT 6';
+    const[rows] = await db.query(query);
+
+    
+    if (rows.length === 0) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Movies not found'
+        });
+        response.code(404);
+        return response;
+
+    }
+    const response = h.response({
+        status : "success",
+        data: {
+            ...rows[0],
+        }
+        response.code(200);
+        return response;
+    })
 }
 
 // TODO: fix, dual variable
-const getSchedule = (request, h) => {
+const getSchedule = async (request, h) => {
     const {movie_id, cinema_id} = request.payload;
     const query = 'SELECT * FROM movieSchedule WHERE movie_id = [movie_id] AND cinema_id = [cinema_id]';
 
@@ -220,7 +240,9 @@ const cancelSeatingBooking = (request, h) => {
 }
 
 //TODO: logout
+// logout gk perlu dihandle pake REST API kyknya soalnya kan stateless
+
 //TODO: search movie
 
-module.exports = {loginHandler, registerHandler};
+module.exports = {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler};
 
