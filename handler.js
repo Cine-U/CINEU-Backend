@@ -94,18 +94,20 @@ const getProfileHandler = async (request, h) => {
         return response;
     }
 
-    return {
-        status: 'success',
+    const response = h.response({
+        status: "success",
         data: {
             ...rows[0],
-        },
-    };
+        }
+    });
+    response.code(200);
+    return response;
 }
 
 // TODO: fix, dual variable
 const updatePasswordHandler = async (request, h) => {
     const {email, password} = request.payload;
-    const query = 'SELECT * FROM customer WHERE cust_email = ?';
+    const query = 'SELECT * FROM customer WHERE cust_email = ? AND password = ?';
     const [rows] = await db.query(query, [email]);
 
     if (rows.length === 0) {
@@ -118,6 +120,13 @@ const updatePasswordHandler = async (request, h) => {
     } else {
         const query = 'UPDATE password FROM customer WHERE cust_email = ?';
         const [rows] = await db.query(query, password);
+
+        const response = h.response({
+            status: "success",
+            message: "Password updated"
+        });
+        response.code(200);
+        return response;
     }
 
 
@@ -127,7 +136,7 @@ const getMovieHandler = async (request, h) => {
     const movie_id = request.params.id;
     const query = 'SELECT * FROM movies where movie_id = ?';
 
-    const [rows] = await db.query(query, [id]);
+    const [rows] = await db.query(query, [movie_id]);
 
     if (rows.length == 0) {
         const response = h.response({
@@ -167,18 +176,18 @@ const getLatestMovieHandler = async (request, h) => {
         status : "success",
         data: {
             ...rows[0],
-        }
-        response.code(200);
-        return response;
-    })
+        }    
+    });
+    response.code(200);
+    return response;
 }
 
 // TODO: fix, dual variable
 const getSchedule = async (request, h) => {
     const {movie_id, cinema_id} = request.payload;
-    const query = 'SELECT * FROM movieSchedule WHERE movie_id = [movie_id] AND cinema_id = [cinema_id]';
+    const query = 'SELECT * FROM movieSchedule WHERE movie_id = ? AND cinema_id = ?';
 
-    const [rows] = await db.query(query, [id]);
+    const [rows] = await db.query(query, [movie_id, cinema_id]);
 
     if (rows.length == 0) {
         const response = h.response({
@@ -188,11 +197,20 @@ const getSchedule = async (request, h) => {
         response.code(404);
         return response;
     }
+
+    const response = h.response({
+        status: "success",
+        data : {
+            ...rows
+        }
+    });
+    response.code(200);
+    return response;
 }
     
 //TODO: fix variable
-const getSeating = (request, h) => {
-    const id = req.params;
+const getSeating = async (request, h) => {
+    const id = request.params.id;
     const query = 'SELECT * FROM seating INNER JOIN theatreSeating ts ON s.theatreSeating_id = ts.theatreSeating_id INNER JOIN movieSchedule ms ON ms.theatre_id = ts.theatre_id WHERE ms.schedule_id = ?';
 
     const [rows] = await db.query(query, [id]);
@@ -205,13 +223,23 @@ const getSeating = (request, h) => {
         response.code(404);
         return response;
     }
+
+    // const response = h.response({
+    //     status:"success",
+    //     data: {
+    //         ...rows
+    //     }
+    // });
+    // response.code(200);
+    // return response;
 }
 
-const bookSeating = (request, h) => {
+// TODO: Success response
+const bookSeating = async (request, h) => {
     const seat_id = request.params.id;
     const query = 'UPDATE seating SET status = 1 WHERE seat_id = ?';
 
-    const [rows] = await db.query(query, [id]);
+    const [rows] = await db.query(query, seat_id);
 
     if (rows.length == 0) {
         const response = h.response({
@@ -223,7 +251,8 @@ const bookSeating = (request, h) => {
     }
 }
 
-const cancelSeatingBooking = (request, h) => {
+// TODO: success response
+const cancelSeatingBooking = async (request, h) => {
     const seat_id = request.params.id;
     const query = 'UPDATE seating SET status = 0 WHERE seat_id = ?';
 
@@ -237,12 +266,14 @@ const cancelSeatingBooking = (request, h) => {
         response.code(404);
         return response;
     }
+
+    // TODO: remove seating from query
 }
 
 //TODO: logout
 // logout gk perlu dihandle pake REST API kyknya soalnya kan stateless
 
 //TODO: search movie
+// searchMovie bisa pake bisa pake getMoviebyID gk?
 
 module.exports = {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler};
-
