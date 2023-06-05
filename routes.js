@@ -24,7 +24,7 @@ const routes = [
     },
     {
         method: "GET",
-        path: "movie/{id}",
+        path: "/movie/{id}",
         handler: getMovieHandler,
     },
 ];
