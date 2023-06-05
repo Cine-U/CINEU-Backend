@@ -4,7 +4,7 @@ const routes = [
     {
         method: "GET",
         path: "/",
-        handler:
+        handler: getLatestMovieHandler,
 
     },
     {
@@ -27,11 +27,6 @@ const routes = [
         path: "movie/{id}",
         handler: getMovieHandler,
     },
-    {
-        method: "GET",
-        path: "/",
-        handler: getLatestMovieHandler,
-    }
 ];
 
 
