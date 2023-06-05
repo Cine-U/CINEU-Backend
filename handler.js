@@ -1,5 +1,5 @@
 const db = require('./database');
-const{nanoid} = require("nanoid");
+const { nanoid } = require("nanoid");
 
 const loginHandler = async (request, h) => {
     const {email, password} = request.payload;
