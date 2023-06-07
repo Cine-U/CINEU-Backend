@@ -76,7 +76,8 @@ CREATE TABLE `movie` (
   `runtime` int,
   `movieDesc` varchar(255),
   `posterUrl` varchar(255),
-  `trailerUrl` varchar(255)
+  `trailerUrl` varchar(255),
+  'release_date' DATE,
 );
 
 CREATE TABLE `customer` (

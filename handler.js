@@ -2,210 +2,226 @@ const db = require('./database');
 const { nanoid } = require("nanoid");
 
 const loginHandler = async (request, h) => {
-    const {email, password} = request.payload;
+  const { email, password } = request.payload;
 
-    if (!email || !password) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Email and Password are required',
-        });
-        response.code(400);
-        return response;
-    }
+  if (!email || !password) {
+    return h.response({
+      status: 'fail',
+      message: 'Email and Password are required',
+    }).code(400);
+  }
 
+  try {
     const query = 'SELECT * FROM customer WHERE cust_email = ?';
     const [rows] = await db.query(query, [email]);
 
     if (rows.length === 0) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Invalid email or password'
-        });
-        response.code(401);
-        return response;
+      return h.response({
+        status: 'fail',
+        message: 'Invalid email or password',
+      }).code(401);
     }
 
     const user = rows[0];
-    const isPasswordCorrect = (password === user.password); 
+    const isPasswordCorrect = password === user.password;
 
-    if(!isPasswordCorrect) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Invalid email or password',
-        });
-        response.code(401);
-        return response;
+    if (!isPasswordCorrect) {
+      return h.response({
+        status: 'fail',
+        message: 'Invalid email or password',
+      }).code(401);
     }
 
-    const response = h.response({
-        status: 'success',
-        message: 'Logged in successfully'
-    });
-    response.code(200);
-    return response;
-}
+    return h.response({
+      status: 'success',
+      message: 'Logged in successfully',
+    }).code(200);
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return h.response({
+      status: 'error',
+      message: 'Internal server error',
+    }).code(500);
+  }
+};
 
 const registerHandler = async (request, h) => {
-    const {email, usrName, password, confirmPassword} = request.payload;
+  const { email, usrName, password, confirmPassword } = request.payload;
 
-    const checkUsrQuery = 'SELECT * FROM customer WHERE cust_email = ?';
-    const [exsistingUsr] = await db.query(chackUsrQuery, [email]);
+  const checkUsrQuery = 'SELECT * FROM customer WHERE cust_email = ?';
 
-    if (exsistingUsr.length > 0) {
-        const response = h.response({
-            status: 'fail',
-            message: 'User with this email already exist'
-        });
-        response.code(400);
-        return response;
-    } else if (password != confirmPassword) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Password doesn\'t match'
-        });
-        response.code(200);
-        return response;
+  try {
+    const [existingUser] = await db.query(checkUsrQuery, [email]);
+
+    if (existingUser.length > 0) {
+      return h.response({
+        status: 'fail',
+        message: 'User with this email already exists',
+      }).code(400);
+    } else if (password !== confirmPassword) {
+      return h.response({
+        status: 'fail',
+        message: "Password doesn't match",
+      }).code(400);
     }
 
     const id = nanoid(16);
     const insertUsrQuery = 'INSERT INTO customer VALUES (?, ?, ?, ?)';
     await db.query(insertUsrQuery, [id, email, usrName, password]);
 
-    const response = h.response({
-        status: "success",
-        message: "User created successfully"
-    });
-    response.code(201);
-    return response;
-}
+    return h.response({
+      status: 'success',
+      message: 'User created successfully',
+    }).code(201);
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return h.response({
+      status: 'error',
+      message: 'Internal server error',
+    }).code(500);
+  }
+};
 
 const getProfileHandler = async (request, h) => {
-    const id = request.params.id;
-    const query = 'SELECT * FROM customers WHERE customer_id = ?';
+  const id = request.params.id;
+  const query = 'SELECT * FROM customers WHERE customer_id = ?';
 
+  try {
     const [rows] = await db.query(query, [id]);
 
     if (rows.length === 0) {
-        const response = h.response({
-            status:'fail',
-            message:'User not found'
-        });
-        response.code(404);
-        return response;
+      return h.response({
+        status: 'fail',
+        message: 'User not found',
+      }).code(404);
     }
 
-    const response = h.response({
-        status: "success",
-        data: {
-            ...rows[0],
-        }
-    });
-    response.code(200);
-    return response;
-}
+    return h.response({
+      status: 'success',
+      data: {
+        ...rows[0],
+      },
+    }).code(200);
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return h.response({
+      status: 'error',
+      message: 'Internal server error',
+    }).code(500);
+  }
+};
 
 // TODO: fix, dual variable
 const updatePasswordHandler = async (request, h) => {
-    const {email, password} = request.payload;
-    const query = 'SELECT * FROM customer WHERE cust_email = ? AND password = ?';
+  const { email, password } = request.payload;
+
+  try {
+    const query = 'SELECT * FROM customer WHERE cust_email = ?';
     const [rows] = await db.query(query, [email]);
 
     if (rows.length === 0) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Invalid email'
-        });
-        response.code(401);
-        return response;
+      return h.response({
+        status: 'fail',
+        message: 'Invalid email',
+      }).code(401);
     } else {
-        const query = 'UPDATE password FROM customer WHERE cust_email = ?';
-        const [rows] = await db.query(query, password);
+      const updateQuery = 'UPDATE customer SET password = ? WHERE cust_email = ?';
+      await db.query(updateQuery, [password, email]);
 
-        const response = h.response({
-            status: "success",
-            message: "Password updated"
-        });
-        response.code(200);
-        return response;
+      return h.response({
+        status: 'success',
+        message: 'Password updated',
+      }).code(200);
     }
-
-
-}
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return h.response({
+      status: 'error',
+      message: 'Internal server error',
+    }).code(500);
+  }
+};
 
 const getMovieHandler = async (request, h) => {
-    const movie_id = request.params.id;
-    const query = 'SELECT * FROM movies where movie_id = ?';
+  const movie_id = request.params.id;
+  const query = 'SELECT * FROM movies where movie_id = ?';
 
+  try {
     const [rows] = await db.query(query, [movie_id]);
 
-    if (rows.length == 0) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Movie  not found'
-        });
-        response.code(404);
-        return response;
+    if (rows.length === 0) {
+      return h.response({
+        status: 'fail',
+        message: 'Movie not found',
+      }).code(404);
     }
 
-    const response = h.response({
-        status: "success",
-        data: {
-            ...rows[0],
-        }
-    });
-    response.code(200);
-        return response;
-}
+    return h.response({
+      status: 'success',
+      data: {
+        ...rows[0],
+      },
+    }).code(200);
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return h.response({
+      status: 'error',
+      message: 'Internal server error',
+    }).code(500);
+  }
+};
 
 //get 6 latest movies for homepage
 const getLatestMovieHandler = async (request, h) => {
-    const query = 'SELECT * FROM movies ORDER BY release_date DESC LIMIT 6';
-    const[rows] = await db.query(query);
+  const query = 'SELECT * FROM movie ORDER BY release_date DESC LIMIT 6';
 
-    
+  try {
+    const [rows] = await db.query(query);
+
     if (rows.length === 0) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Movies not found'
-        });
-        response.code(404);
-        return response;
-
+      return h.response({
+        status: 'fail',
+        message: 'Movies not found',
+      }).code(404);
     }
-    const response = h.response({
-        status : "success",
-        data: {
-            ...rows[0],
-        }    
-    });
-    response.code(200);
-    return response;
-}
+
+    return h.response({
+      status: 'success',
+      data: rows,
+    }).code(200);
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return h.response({
+      status: 'error',
+      message: 'Internal server error',
+    }).code(500);
+  }
+};
 
 // TODO: fix, dual variable
 const getSchedule = async (request, h) => {
-    const {movie_id, cinema_id} = request.payload;
-    const query = 'SELECT * FROM movieSchedule WHERE movie_id = ? AND cinema_id = ?';
+  const {movie_id, cinema_id} = request.payload;
+  const query = 'SELECT * FROM movieSchedule WHERE movie_id = ? AND cinema_id = ?';
 
-    const [rows] = await db.query(query, [movie_id, cinema_id]);
+  const [rows] = await db.query(query, [movie_id, cinema_id]);
 
-    if (rows.length == 0) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Movie schedule not found'
-        });
-        response.code(404);
-        return response;
-    }
+  if (rows.length == 0) {
+      const response = h.response({
+          status: 'fail',
+          message: 'Movie schedule not found'
+      });
+      response.code(404);
+      return response;
+  }
 
-    const response = h.response({
-        status: "success",
-        data : {
-            ...rows
-        }
-    });
-    response.code(200);
-    return response;
+  const response = h.response({
+      status: "success",
+      data : {
+          ...rows
+      }
+  });
+  response.code(200);
+  return response;
 }
     
 //TODO: fix variable
