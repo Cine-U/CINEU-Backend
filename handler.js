@@ -111,7 +111,6 @@ const getProfileHandler = async (request, h) => {
   }
 };
 
-// TODO: fix, dual variable
 const updatePasswordHandler = async (request, h) => {
   const { email, password } = request.payload;
 
@@ -198,7 +197,6 @@ const getLatestMovieHandler = async (request, h) => {
   }
 };
 
-// TODO: fix, dual variable
 const getSchedule = async (request, h) => {
   const {movie_id, cinema_id} = request.payload;
   const query = 'SELECT * FROM movieSchedule WHERE movie_id = ? AND cinema_id = ?';
@@ -285,11 +283,5 @@ const cancelSeatingBooking = async (request, h) => {
 
     // TODO: remove seating from query
 }
-
-//TODO: logout
-// logout gk perlu dihandle pake REST API kyknya soalnya kan stateless
-
-//TODO: search movie
-// searchMovie bisa pake bisa pake getMoviebyID gk?
 
 module.exports = {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler};

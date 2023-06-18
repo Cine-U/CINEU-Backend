@@ -1,12 +1,7 @@
 const {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler} = require("./handler");
 
 const routes = [
-    {
-        method: "GET",
-        path: "/",
-        handler: getLatestMovieHandler,
 
-    },
     {
         method: "POST",
         path: "/login",
@@ -26,6 +21,12 @@ const routes = [
         method: "GET",
         path: "/movie/{id}",
         handler: getMovieHandler,
+    },
+    {
+        method: "GET",
+        path: "/latest-movie",
+        handler: getLatestMovieHandler,
+
     },
 ];
 

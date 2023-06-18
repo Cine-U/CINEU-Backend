@@ -1,14 +1,15 @@
 const mysql = require('mysql');
 const util = require('util');
 const path = require('path');
+require('dotenv').config(); // Load environment variables from .env file
 
 const keyPath = path.join(__dirname, 'config', 'authentication.json');
 
 const db = mysql.createConnection({
-  host: '34.173.105.246',
-  user: 'root',
-  password: 'beraktakcebok',
-  database: 'cineu',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   keyFilename: keyPath
 });
 

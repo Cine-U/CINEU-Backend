@@ -1,3 +1,4 @@
 authentication.json
 node_modlues/
 package-lock.json
+.env
