@@ -370,5 +370,19 @@ const cancelSeatingBookingHandler = async (request, h) => {
   return response;
 };
 
+const helloworld = async (request, h) => {
+  try {
+    return h.response({
+      status: 'success',
+      message: 'Hello World!',
+    }).code(200);
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return h.response({
+      status: 'error',
+      message: 'Internal server error',
+    }).code(500);
+  }
+};
 
-module.exports = {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler, getScheduleHandler, getSeatingHandler, bookSeatingHandler, cancelSeatingBookingHandler};
+module.exports = {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler, getScheduleHandler, getSeatingHandler, bookSeatingHandler, cancelSeatingBookingHandler, helloworld};

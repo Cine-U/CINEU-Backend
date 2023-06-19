@@ -1,7 +1,12 @@
-const {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler, getScheduleHandler, getSeatingHandler, bookSeatingHandler, cancelSeatingBookingHandler} = require("./handler");
+const {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler, getScheduleHandler, getSeatingHandler, bookSeatingHandler, cancelSeatingBookingHandler, helloworld} = require("./handler");
 
 const routes = [
 
+    {
+        method: "GET",
+        path: "/",
+        handler: helloworld
+    },
     {
         method: "POST",
         path: "/login",
