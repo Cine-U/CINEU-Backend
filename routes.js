@@ -1,4 +1,4 @@
-const {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler} = require("./handler");
+const {loginHandler, registerHandler, getProfileHandler, updatePasswordHandler, getMovieHandler, getLatestMovieHandler, getScheduleHandler, getSeatingHandler, bookSeatingHandler, cancelSeatingBookingHandler} = require("./handler");
 
 const routes = [
 
@@ -18,6 +18,11 @@ const routes = [
         handler: getProfileHandler,
     },
     {
+        method: "PUT",
+        path: "/profile/update-password",
+        handler: updatePasswordHandler,
+    },
+    {
         method: "GET",
         path: "/movie/{id}",
         handler: getMovieHandler,
@@ -28,6 +33,26 @@ const routes = [
         handler: getLatestMovieHandler,
 
     },
+    {
+        method: "GET",
+        path: "/schedule/{id}",
+        handler: getScheduleHandler,
+      },
+      {
+        method: "GET",
+        path: "/seating/{id}",
+        handler: getSeatingHandler,
+      },
+      {
+        method: "POST",
+        path: "/seating/book/{id}",
+        handler: bookSeatingHandler,
+      },
+      {
+        method: "PUT",
+        path: "/seating/{id}/cancel-booking",
+        handler: cancelSeatingBookingHandler,
+      },
 ];
 
 
