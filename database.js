@@ -3,7 +3,7 @@ const util = require('util');
 const path = require('path');
 require('dotenv').config(); // Load environment variables from .env file
 
-const keyPath = path.join(__dirname, 'config', 'authentication.json');
+const keyPath = path.join(__dirname, 'authentication.json');
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
