@@ -81,21 +81,21 @@ CREATE TABLE `movie` (
 );
 
 CREATE TABLE `customer` (
-  `customer_id` int PRIMARY KEY AUTO_INCREMENT,
-  `cust_email` varchar(255),
-  `username` varchar(255),
-  `password` varchar(255),
-  `firstName` varchar(255),
-  `lastName` varchar(255),
-  `birthday` date,
-  `phoneNumber` varchar(255),
-  `street` varchar(255),
-  `city` varchar(255),
-  `province` varchar(255),
-  `postalcode` int,
-  `paymentMethod` varchar(255),
-  `cardNumber` varchar(255),
-  `expiryDate` date
+  `customer_id` INT PRIMARY KEY,
+  `cust_email` VARCHAR(255),
+  `username` VARCHAR(255),
+  `password` VARCHAR(255),
+  `firstName` VARCHAR(255),
+  `lastName` VARCHAR(255),
+  `birthday` DATE,
+  `phoneNumber` VARCHAR(255),
+  `street` VARCHAR(255),
+  `city` VARCHAR(255),
+  `province` VARCHAR(255),
+  `postalcode` INT,
+  `paymentMethod` VARCHAR(255),
+  `cardNumber` VARCHAR(255),
+  `expiryDate` DATE
 );
 
 CREATE TABLE `admin` (
